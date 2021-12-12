@@ -39,7 +39,7 @@ export default function SigninScreen(props) {
         <div>
           <label htmlFor="email">Email address / Mobile Number</label>
           <input
-            type="tel"
+            type="text"
             id="email"
             placeholder="Enter email / mobile number"
             required
