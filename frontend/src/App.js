@@ -24,7 +24,7 @@ const ENDPOINT =
     : window.location.host;
 
 function App() {
-  
+  const URL=window.location.href;
   const wishList = useSelector((state) => state.wishList);
   const { wishListItems } = wishList;
   const [socket, setSocket] = useState(null);
@@ -33,7 +33,7 @@ function App() {
   const dispatch = useDispatch();
   const signoutHandler = () => {
     dispatch(signout());
-   window.location.href="http://book-store-resale.herokuapp.com/"
+   window.location.href=URL;
     
   };
 useEffect(() => {
