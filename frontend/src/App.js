@@ -24,6 +24,7 @@ const ENDPOINT =
     : window.location.host;
 
 function App() {
+  
   const wishList = useSelector((state) => state.wishList);
   const { wishListItems } = wishList;
   const [socket, setSocket] = useState(null);
@@ -32,6 +33,8 @@ function App() {
   const dispatch = useDispatch();
   const signoutHandler = () => {
     dispatch(signout());
+   window.location.href="http://book-store-resale.herokuapp.com/"
+    
   };
 useEffect(() => {
   if(userInfo){
@@ -40,7 +43,7 @@ useEffect(() => {
       setSocket(sk);
       sk.emit('onLogin', {
         _id: userInfo._id,
-        firstName: userInfo.firstName,
+        name: userInfo.name,
         isAdmin: userInfo.isAdmin,
       });
     }
@@ -120,6 +123,7 @@ useEffect(() => {
                     </div>
               </aside>
               <main>
+               
                 <Route
                   path="/search/name/:name?"
                   component={SearchScreen}
@@ -137,6 +141,7 @@ useEffect(() => {
                 <PrivateRoute path="/producthistory" component={ProductHistoryScreen}></PrivateRoute>
                 <PrivateRoute path="/chat" component={ChatScreen}></PrivateRoute>
                 <PrivateRoute path="/map" component={MapScreen}></PrivateRoute>
+               
               </main>
               <footer>
               <div className='arr'>All right reserved</div>{' '}

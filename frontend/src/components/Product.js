@@ -10,8 +10,8 @@ export default function Product(props) {
         </Link>
         <div className="card-body">
           <Link to={`/product/${product._id}`}>
-            <h2 style={{color:"white", fontSize:"2rem"}}>{product.name}</h2>
-            <h2 style={{color:"white", fontSize:"2rem"}}>{product.publisher}</h2>
+            <h2 style={{color:"white", fontSize:"1.5rem"}}>{product.name}</h2>
+            {/* <h2 style={{color:"white", fontSize:"1.5rem"}}>{product.publisher}</h2> */}
           </Link>
           <div className="price">Rs {product.price}</div>
         </div>

@@ -194,7 +194,7 @@ export default function ChatScreen() {
         )}
         <ul>
           {users
-            .filter((x) => x._id !== userInfo._id)
+            .filter((x) => x._id !== userInfo._id && x.name)
             .map((user) => (
               <li
                 key={user._id}

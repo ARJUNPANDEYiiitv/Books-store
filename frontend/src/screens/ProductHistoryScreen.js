@@ -27,7 +27,7 @@ export default function ProductHistoryScreen(props) {
     }
   };
   return (
-    <div>
+    <div className='pht'>
       <p className='ph'>Product History</p>
       {loadingDelete && <LoadingBox></LoadingBox>}
       {errorDelete && <MessageBox variant="danger">{errorDelete}</MessageBox>}
@@ -55,7 +55,7 @@ export default function ProductHistoryScreen(props) {
                 <td>{product.publisher}</td>
                 <td>{product.price}</td>
                 <td>{product.createdAt}</td>
-                <td>
+                <td className='action'>
                   <button
                     type="button"
                     className="small"
@@ -81,4 +81,3 @@ export default function ProductHistoryScreen(props) {
     </div>
   );
 }
-

@@ -11,7 +11,6 @@ import http from 'http';
 import { Server } from 'socket.io';
 import {isAuth} from './util.js';
 import cloudinary from './cloudinary.js'
-import Chat from './models/chatModel.js'
 
 const app = express();
 dotenv.config();
@@ -75,39 +74,39 @@ app.get('/api/config/google', (req, res) => {
 const port = process.env.PORT;
 const httpServer = http.Server(app);
 const io = new Server(httpServer, { cors: { origin: '*' } });
-let users=[];
+const users = [];
+
 io.on('connection', (socket) => {
-  socket.on('disconnect', async() => {
-    const user =await Chat.findOne({socketId:socket.id});
-    console.log(user);
+  socket.on('disconnect', () => {
+    const user = users.find((x) => x.socketId === socket.id);
     if (user) {
-      user.online = false;
-      const offline=await user.save();
-      users=await Chat.find({});
+      user.online = false
       console.log('Offline', user.name);
+      const admin = users.find((x) => x.isAdmin && x.online);
+      if (admin) {
+        io.to(admin.socketId).emit('updateUser', user);
+      }
     }
   });
 
-  socket.on('onLogin',async (user) => {
+  socket.on('onLogin', (user) => {
     const updatedUser = {
       ...user,
       online: true,
       socketId: socket.id,
       messages: [],
     };
-    const existUser = await Chat.findById(updatedUser._id);
+     //console.log(updatedUser)
+    const existUser = users.find((x) => x._id === updatedUser._id);
     if (existUser) {
       existUser.socketId = socket.id;
       existUser.online = true;
-      const update=await existUser.save();
      
     } else {
-      const creat=await Chat.create(updatedUser);
+      users.push(updatedUser);
     }
     console.log('Online', user.name);
    
-    users=await Chat.find({});
-
      users.map((y)=>{
       io.to(y.socketId).emit('updateUser', updatedUser);
     });
@@ -117,25 +116,23 @@ io.on('connection', (socket) => {
   });
   
 
-  socket.on('onUserSelected',async (user,login) => {
-     const sender = await Chat.findOne({_id:login._id,online:true });
+  socket.on('onUserSelected', (user,login) => {
+     const sender = users.find((x) => x._id===login._id && x.online);
      if (sender) {
-      const existUser = await Chat.findById(user._id);
+      const existUser = users.find((x) => x._id === user._id);
      // console.log(existUser.messages);
       if(existUser)
       io.to(sender.socketId).emit('selectUser', sender);
    }
   });
 
- socket.on('onMessage', async(message) => {
-      const user = await Chat.findById(message._id);
-      const info=await Chat.findById(message.userInformation);
+ socket.on('onMessage', (message) => {
+      const user = users.find((x) => x._id === message._id );
+      const info=users.find((x)=> x._id===message.userInformation);
       if (user) {
         io.to(user.socketId).emit('message', message);
         user.messages.push(message);
-        info.messages.push(message);
-        await user.save();
-        await info.save(); 
+        info.messages.push(message);   
       } 
   });
 
